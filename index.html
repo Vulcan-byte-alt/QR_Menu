@@ -813,6 +813,12 @@
                     <div class="partner-slide"><img loading="lazy" src="assets/clients/client6.png" alt="Partner 6"
                             class="partner-logo">
                     </div>
+                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client7.png" alt="Partner 6" class="partner-logo">
+                    </div>
+                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client8.png" alt="Partner 6" class="partner-logo">
+                    </div>
+                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client9.png" alt="Partner 6" class="partner-logo">
+                    </div>
                 </div>
             </div>
         </div>
@@ -1313,80 +1319,59 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const carousel = document.querySelector('.partner-carousel-inner');
-            const slides = Array.from(document.querySelectorAll('.partner-slide'));
-            const slideWidth = slides[0].offsetWidth; // Width of a single slide
-            let currentIndex = 0;
-            let interval;
+                const carousel = document.querySelector('.partner-carousel-inner');
+                const slides = Array.from(document.querySelectorAll('.partner-slide'));
+                let slideWidth = slides[0].offsetWidth; // Dynamically update for responsiveness
+                let currentIndex = 0;
+                let interval;
 
-            // Clone the first and last slides
-            const firstClones = slides.slice(0, 4).map(slide => slide.cloneNode(true));
-            const lastClones = slides.slice(-4).map(slide => slide.cloneNode(true));
-
-            // Apply clones to desktop only
-            if (window.innerWidth > 768) {
-                firstClones.forEach(clone => carousel.appendChild(clone));
-                lastClones.reverse().forEach(clone => carousel.insertBefore(clone, slides[0]));
-                carousel.style.transform = `translateX(-${4 * slideWidth}px)`;
-            }
-
-            function resetCarousel() {
-                if (window.innerWidth <= 768) {
-                    carousel.style.transition = 'none'; // Disable transitions for immediate positioning
-
-                    carousel.style.transform = `translateX(0px)`;
-                } else {
-                    // Restore the original behavior for desktop
-                    carousel.style.transform = `translateX(-${4 * slideWidth}px)`;
+                function updateSlideWidth() {
+                    slideWidth = slides[0].offsetWidth;
                 }
-            }
 
-            function moveSlides() {
-                if (window.innerWidth > 768) {
+                function moveSlides() {
                     currentIndex++;
                     carousel.style.transition = 'transform 0.5s ease-in-out';
-                    carousel.style.transform = `translateX(-${(currentIndex + 4) * slideWidth}px)`;
+                    carousel.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
 
+                    // Reset to the first slide after reaching the end
                     carousel.addEventListener('transitionend', function resetPosition() {
                         if (currentIndex >= slides.length) {
                             currentIndex = 0;
-                            carousel.style.transition = 'none';
-                            carousel.style.transform = `translateX(-${4 * slideWidth}px)`;
-                        } else if (currentIndex < 0) {
-                            currentIndex = slides.length - 1;
-                            carousel.style.transition = 'none';
-                            carousel.style.transform = `translateX(-${(currentIndex + 4) * slideWidth}px)`;
+                            carousel.style.transition = 'none'; // Disable animation for instant reset
+                            carousel.style.transform = `translateX(0px)`;
                         }
                         carousel.removeEventListener('transitionend', resetPosition);
                     });
+                }
 
-                } else {
-                    // Mobile carousel
-                    currentIndex = (currentIndex + 1) % slides.length; // loop through the slides
-                    carousel.style.transition = 'transform 0.5s ease-in-out';
+                // Start the carousel
+                function startCarousel() {
+                    interval = setInterval(moveSlides, 3000);
+                }
+
+                // Stop the carousel
+                function stopCarousel() {
+                    clearInterval(interval);
+                }
+
+                // Reset the carousel on resize
+                function resetCarousel() {
+                    updateSlideWidth();
+                    carousel.style.transition = 'none'; // Disable transitions during resize
                     carousel.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
                 }
-            }
 
+                // Add event listeners
+                carousel.addEventListener('mouseover', stopCarousel);
+                carousel.addEventListener('mouseout', startCarousel);
+                window.addEventListener('resize', resetCarousel);
 
-            // Start the carousel
-            function startCarousel() {
-                interval = setInterval(moveSlides, 3000);
-            }
-
-            // Stop the carousel
-            function stopCarousel() {
-                clearInterval(interval);
-            }
-
-            resetCarousel()
-            // Start carousel on load
-            startCarousel();
-
-            window.addEventListener('resize', resetCarousel)
-        });
+                // Initialize
+                resetCarousel();
+                startCarousel();
+            });
     </script>
-    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
                 const mobileMenuButton = document.querySelector('.mobile-menu-button');
