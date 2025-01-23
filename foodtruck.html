@@ -181,6 +181,7 @@
         .category-button {
             transition: all 0.3s ease;
             position: relative;
+            scroll-snap-align: center;
         }
 
         .category-button::after {
@@ -223,6 +224,20 @@
 
         .slideInBottom {
             animation: slideInBottom 0.5s ease-out;
+        }
+
+        nav .flex.space-x-8 {
+            scroll-snap-type: x mandatory;
+            overflow-x: auto;
+            -ms-overflow-style: none;
+            /* for Internet Explorer, Edge */
+            scrollbar-width: none;
+            /* for Firefox */
+        }
+
+        nav .flex.space-x-8::-webkit-scrollbar {
+            display: none;
+            /* for Chrome, Safari, and Opera */
         }
     </style>
 </head>
@@ -267,19 +282,23 @@
                 <div class="flex items-center">
                     <img src="logo.png" alt="QRMenuHub Logo" class="h-10 w-auto mr-3" />
                 </div>
-    
+
                 <!-- Navigation Links - Centered -->
                 <div class="hidden md:flex items-center justify-center flex-1">
                     <div class="flex items-center space-x-8">
-                        <a href="index.html" class="text-sm text-gray-300 hover:text-white transition-colors">HomePage</a>
-                        <a href="pricing.html" class="text-sm text-gray-300 hover:text-white transition-colors">Pricing</a>
-                        <a href="restaurant.html" class="text-sm text-gray-300 hover:text-white transition-colors">Restaurant</a>
-                        <a href="foodtruck.html" class="text-sm text-gray-300 hover:text-white transition-colors">Food Truck</a>
+                        <a href="index.html"
+                            class="text-sm text-gray-300 hover:text-white transition-colors">HomePage</a>
+                        <a href="pricing.html"
+                            class="text-sm text-gray-300 hover:text-white transition-colors">Pricing</a>
+                        <a href="restaurant.html"
+                            class="text-sm text-gray-300 hover:text-white transition-colors">Restaurant</a>
+                        <a href="foodtruck.html" class="text-sm text-gray-300 hover:text-white transition-colors">Food
+                            Truck</a>
                         <a href="cafe.html" class="text-sm text-gray-300 hover:text-white transition-colors">Cafe</a>
                         <a href="bar.html" class="text-sm text-gray-300 hover:text-white transition-colors">Bar</a>
                     </div>
                 </div>
-    
+
                 <!-- CTA Button -->
                 <div class="gradient-border">
                     <div class="px-6 py-2 hover:bg-white/5 transition-colors cursor-pointer">
@@ -326,7 +345,8 @@
             <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 <div class="gradient-border">
                     <div class="menu-card overflow-hidden">
-                        <img src="assets/wheels on meals/menu1.png" alt="Classic Burger" class="w-full h-56 object-cover">
+                        <img src="assets/wheels on meals/menu1.png" alt="Classic Burger"
+                            class="w-full h-56 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-xl font-medium">Classic Burger</h3>
@@ -364,7 +384,8 @@
                 </div>
                 <div class="gradient-border">
                     <div class="menu-card overflow-hidden">
-                        <img src="assets/wheels on meals/menu3.png" alt="Veggie Burger" class="w-full h-56 object-cover">
+                        <img src="assets/wheels on meals/menu3.png" alt="Veggie Burger"
+                            class="w-full h-56 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-xl font-medium">Veggie Burger</h3>
@@ -412,7 +433,8 @@
                 </div>
                 <div class="gradient-border">
                     <div class="menu-card overflow-hidden">
-                        <img src="assets/wheels on meals/menu5.png" alt="Chicken Tacos" class="w-full h-56 object-cover">
+                        <img src="assets/wheels on meals/menu5.png" alt="Chicken Tacos"
+                            class="w-full h-56 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-xl font-medium">Chicken Tacos</h3>
@@ -565,7 +587,8 @@
                 </div>
                 <div class="gradient-border">
                     <div class="menu-card overflow-hidden">
-                        <img src="assets/wheels on meals/menu12.png" alt="Bottled Water" class="w-full h-56 object-cover">
+                        <img src="assets/wheels on meals/menu12.png" alt="Bottled Water"
+                            class="w-full h-56 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-xl font-medium">Bottled Water</h3>
@@ -594,7 +617,8 @@
             <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 <div class="gradient-border">
                     <div class="menu-card overflow-hidden">
-                        <img src="assets/wheels on meals/menu13.png" alt="Special Burrito" class="w-full h-56 object-cover">
+                        <img src="assets/wheels on meals/menu13.png" alt="Special Burrito"
+                            class="w-full h-56 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-xl font-medium">Special Burrito</h3>
@@ -613,7 +637,8 @@
                 </div>
                 <div class="gradient-border">
                     <div class="menu-card overflow-hidden">
-                        <img src="assets/wheels on meals/menu14.png" alt="Special Sandwich" class="w-full h-56 object-cover">
+                        <img src="assets/wheels on meals/menu14.png" alt="Special Sandwich"
+                            class="w-full h-56 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-xl font-medium">Special Sandwich</h3>
@@ -632,7 +657,8 @@
                 </div>
                 <div class="gradient-border">
                     <div class="menu-card overflow-hidden">
-                        <img src="assets/wheels on meals/menu15.png" alt="Special Combo" class="w-full h-56 object-cover">
+                        <img src="assets/wheels on meals/menu15.png" alt="Special Combo"
+                            class="w-full h-56 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-xl font-medium">Special Combo</h3>
@@ -657,12 +683,12 @@
     <footer class="py-12 border-t border-white/5 text-gray-400">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-    
+
                 <div class="text-center md:text-left">
                     <img src="logo.png" alt="QRMenuHub Logo" class="h-10 w-auto mr-3 mb-2" />
                     <p class="text-sm">Simplifying Menus, Enhancing Experiences.</p>
                 </div>
-    
+
                 <div class="text-center md:text-left">
                     <h4 class="font-bold mb-4 text-white">Products</h4>
                     <ul class="space-y-2">
@@ -672,7 +698,7 @@
                         <li><a href="pricing.html" class="text-sm hover:text-white transition-colors">Pricing</a></li>
                     </ul>
                 </div>
-    
+
                 <div class="text-center md:text-left">
                     <h4 class="font-bold mb-4 text-white">Company</h4>
                     <ul class="space-y-2">
@@ -718,6 +744,18 @@
                 closeModal();
             }
         });
+        function scrollToCenter(element) {
+            const container = element.parentElement;
+            const containerWidth = container.offsetWidth;
+            const elementWidth = element.offsetWidth;
+            const elementLeft = element.offsetLeft;
+            const scrollLeft = elementLeft - (containerWidth / 2) + (elementWidth / 2);
+
+            container.scroll({
+                left: scrollLeft,
+                behavior: 'smooth'
+            });
+        }
         function showTab(tabId) {
             const tabs = document.querySelectorAll('.menu-tab');
             const buttons = document.querySelectorAll('.category-button');
@@ -743,6 +781,7 @@
             selectedButton.classList.add('active-tab');
             selectedButton.classList.remove('text-gray-400')
             selectedButton.classList.add('text-white')
+            scrollToCenter(selectedButton);
         }
         function getAnimationClass(tabId) {
             switch (tabId) {
