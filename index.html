@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>QRMenuHub - Digital Menu Solutions</title>
+
+    <!-- Load CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Scripts -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateX(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateX(20px) rotate(0deg);
+            }
+
+            100% {
+                transform: translateX(0px) rotate(0deg);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+        }
+
+        .bg-mesh {
+            background-color: #0F172A;
+            background-image:
+                radial-gradient(at 40% 20%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(236, 72, 153, 0.12) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgba(139, 92, 246, 0.12) 0px, transparent 50%);
+            background-size: 120% 120%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Disable floating animation for hero image on mobile */
+        @media (max-width: 768px) {
+            .hero-image.floating {
+                animation: none;
+                transform: none;
+            }
+
+            /* Disable GSAP animation for the entire hero section on mobile */
+
+            #home .hero-content,
+            #home .hero-image {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+
+            #home {
+                transform: none !important;
+                transition: none !important;
+                opacity: 1 !important;
+            }
+        }
+
+        /* Update the existing glow class */
+        .glow {
+            position: fixed;
+            /* Change from absolute to fixed */
+            width: min(500px, 100vw);
+            /* Responsive width */
+            height: min(500px, 100vh);
+            /* Responsive height */
+            background: radial-gradient(circle at center,
+                    rgba(56, 189, 248, 0.15),
+                    rgba(236, 72, 153, 0.15),
+                    transparent 70%);
+            filter: blur(100px);
+            animation: pulse 8s infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Update media queries for glow */
+        @media (max-width: 768px) {
+            .glow {
+                width: min(300px, 90vw);
+                height: min(300px, 90vh);
+                opacity: 0.3;
+                filter: blur(60px);
+                /* Reduced blur for better performance */
+            }
+
+            /* Adjust glow positions */
+            #home .glow:first-child {
+                top: 20%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            #home .glow:last-child {
+                bottom: 20%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Add containment for glow parent elements */
+        section {
+            position: relative;
+            overflow: hidden;
+            /* Contain the glow effect */
+            z-index: 1;
+        }
+
+        /* Ensure content stays above glow */
+        .max-w-7xl {
+            position: relative;
+            z-index: 2;
+        }
+
+        .frame {
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gradient-border {
+            position: relative;
+            border-radius: 0.75rem;
+            background: linear-gradient(45deg,
+                    rgba(56, 189, 248, 0.5),
+                    rgba(236, 72, 153, 0.5),
+                    rgba(139, 92, 246, 0.5));
+            padding: 1px;
+        }
+
+        .gradient-border>div {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 0.7rem;
+        }
+
+        /* First fix the navigation styles */
+        .nav-blur {
+            backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #38BDF8, #EC4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            will-change: transform, opacity;
+        }
+
+        .section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .counter {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #38BDF8;
+        }
+
+        .partner-logo {
+            height: 100px;
+            width: 200px;
+            object-fit: contain;
+            transition: all 0.3s ease;
+            padding: 1rem;
+        }
+
+
+        .partner-carousel {
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        .partner-carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .partner-slide {
+            flex: 0 0 25%;
+            /* Show 4 slides by default */
+            padding: 0 1rem;
+        }
+
+        /* Default desktop carousel styling */
+        @media (min-width: 769px) {
+            .partner-slide {
+                flex: 0 0 25%;
+                /* Show 4 slides on desktop by default */
+            }
+        }
+
+
+
+        @media (max-width: 768px) {
+            .partner-slide {
+                flex: 0 0 100%;
+                /* Show 1 slide on mobile */
+            }
+
+            .partner-carousel-inner {
+                display: flex;
+                justify-content: flex-start;
+                /* Align items to the start */
+            }
+
+            .partner-logo {
+                display: block;
+                margin: 0 auto;
+                /* Center the logo horizontally */
+
+            }
+
+        }
+
+        @media (max-width: 520px) {
+            .partner-slide {
+                flex: 0 0 100%;
+                /* Show 1 slides */
+            }
+        }
+
+        .custom-button {
+            width: 100%;
+            /* w-full */
+            padding: 1rem 2rem;
+            /* px-8 py-4 */
+            background: linear-gradient(to right, #38bdf8, #a855f7);
+            /* bg-gradient-to-r from-sky-400 to-purple-500 */
+            color: white;
+            /* text-white */
+            border-radius: 0.5rem;
+            /* rounded-lg */
+            font-weight: 500;
+            /* font-medium */
+            transition: opacity 0.2s;
+            /* hover:opacity-90 & transition-opacity */
+            outline: none;
+            /* focus:outline-none */
+        }
+
+        .custom-button:hover {
+            opacity: 0.9;
+            /* hover:opacity-90 */
+        }
+
+        .custom-button:focus {
+            box-shadow: 0 0 0 2px #38bdf8;
+            /* focus:ring-2 focus:ring-sky-400 */
+        }
+
+        .smoked-glass {
+            background-color: rgba(0, 0, 0, 0.13);
+            /* Semi-transparent black */
+            backdrop-filter: blur(10px);
+            /* Adds the smoky, frosted effect */
+            -webkit-backdrop-filter: blur(10px);
+            /* For Safari compatibility */
+            border-radius: 16px;
+            /* Rounded corners for the box */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            /* Subtle shadow for depth */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            /* Light border for glass effect */
+            padding: 20px;
+        }
+
+        /* Add to your existing styles */
+        .mobile-menu-button {
+            display: none;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(12px);
+            padding: 1rem;
+            z-index: 49;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(-100%);
+            transition: transform 0.3s ease-in-out;
+            will-change: transform;
+        }
+
+        .mobile-menu.active {
+            display: block;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            /* Mobile navigation fixes */
+            @media (max-width: 768px) {
+                .nav-blur {
+                    background: rgba(15, 23, 42, 0.95);
+                    /* More opaque background on mobile */
+                }
+
+                .mobile-menu {
+                    display: none;
+                    position: fixed;
+                    top: 80px;
+                    left: 0;
+                    right: 0;
+                    background: rgba(15, 23, 42, 0.98);
+                    backdrop-filter: blur(12px);
+                    padding: 1rem;
+                    z-index: 50;
+                    transform: translateY(-100%);
+                    transition: transform 0.3s ease-in-out;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                    will-change: transform;
+
+                }
+
+                .mobile-menu.active {
+                    display: block;
+                    transform: translateY(0);
+                }
+
+                /* Hide desktop menu items on mobile */
+                .desktop-menu {
+                    display: none !important;
+                }
+
+                /* Show mobile menu button */
+                .mobile-menu-button {
+                    display: block !important;
+                }
+
+                /* Ensure "Get Started" button is hidden on mobile nav */
+                nav .gradient-border {
+                    display: none;
+                }
+            }
+
+            /* Hero section mobile optimization */
+            @media (max-width: 768px) {
+                #home {
+                    padding-top: 6rem;
+                    padding-bottom: 3rem;
+                }
+
+                /* Reorder hero content for mobile */
+                #home .grid {
+                    grid-template-columns: 1fr !important;
+                    gap: 2rem !important;
+                }
+
+                /* Center hero text content */
+                .hero-content {
+                    text-align: center;
+                }
+
+                /* Position image right after header */
+                .hero-image {
+                    margin-top: 1rem;
+                    margin-bottom: 2rem;
+                }
+
+                /* Adjust text sizes */
+                .hero-content h1 {
+                    font-size: 2.5rem !important;
+                    line-height: 1.2 !important;
+                    margin-bottom: 1rem;
+                }
+
+                .hero-content p {
+                    font-size: 1.125rem !important;
+                    margin-bottom: 1.5rem;
+                }
+
+                /* Center stats grid */
+                .hero-content .grid {
+                    justify-items: center;
+                }
+
+                /* Center buttons */
+                .hero-content .flex {
+                    justify-content: center;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1rem;
+                }
+
+                /* Make buttons full width on mobile */
+                .hero-content .gradient-border,
+                .hero-content button {
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+
+            /* Features section mobile optimization */
+            #features h2,
+            #why-qrmenu h2,
+            #about h2,
+            #partners h2,
+            #contact h2 {
+                font-size: 2rem !important;
+            }
+
+            .gradient-border {
+                margin: 0.5rem 0;
+            }
+
+            /* Contact form mobile optimization */
+            #contact .grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Footer mobile optimization */
+            footer .grid {
+                grid-template-columns: 1fr !important;
+                text-align: center;
+            }
+
+            /* General spacing adjustments */
+            .py-24 {
+                padding-top: 3rem !important;
+                padding-bottom: 3rem !important;
+            }
+
+            .px-6 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+
+            /* Partner logos adjustment */
+            .partner-logo {
+                height: 80px !important;
+                width: 160px !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-mesh min-h-screen text-white overflow-x-hidden">
+    <!-- Replace the existing nav with this new mobile-friendly version -->
+    <nav class="fixed w-full z-50 nav-blur border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <img src="logo.png" alt="QRMenuHub Logo" class="h-8 w-auto">
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8 desktop-menu">
+                    <a href="index.html" class="text-sm text-gray-300 hover:text-white transition-colors">HomePage</a>
+                    <a href="pricing.html" class="text-sm text-gray-300 hover:text-white transition-colors">Pricing</a>
+                    <a href="restaurant.html"
+                        class="text-sm text-gray-300 hover:text-white transition-colors">Restaurant</a>
+                    <a href="foodtruck.html" class="text-sm text-gray-300 hover:text-white transition-colors">Food
+                        Truck</a>
+                    <a href="cafe.html" class="text-sm text-gray-300 hover:text-white transition-colors">Cafe</a>
+                    <a href="bar.html" class="text-sm text-gray-300 hover:text-white transition-colors">Bar</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button
+                    class="mobile-menu-button p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+
+                <!-- CTA Button -->
+                <div class="hidden md:block">
+                    <div class="gradient-border">
+                        <div class="px-4 py-2 hover:bg-white/5 transition-colors cursor-pointer">
+                            <span class="text-sm font-medium">Get Started</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div class="mobile-menu">
+            <div class="space-y-4">
+                <a href="index.html"
+                    class="block px-4 py-2 text-base text-gray-300 hover:text-white hover:bg-gray-700 rounded-md">HomePage</a>
+                <a href="pricing.html"
+                    class="block px-4 py-2 text-base text-gray-300 hover:text-white hover:bg-gray-700 rounded-md">Pricing</a>
+                <a href="restaurant.html"
+                    class="block px-4 py-2 text-base text-gray-300 hover:text-white hover:bg-gray-700 rounded-md">Restaurant</a>
+                <a href="foodtruck.html"
+                    class="block px-4 py-2 text-base text-gray-300 hover:text-white hover:bg-gray-700 rounded-md">Food
+                    Truck</a>
+                <a href="cafe.html"
+                    class="block px-4 py-2 text-base text-gray-300 hover:text-white hover:bg-gray-700 rounded-md">Cafe</a>
+                <a href="bar.html"
+                    class="block px-4 py-2 text-base text-gray-300 hover:text-white hover:bg-gray-700 rounded-md">Bar</a>
+                <div class="gradient-border mt-4">
+                    <div class="px-4 py-2 text-center hover:bg-white/5 transition-colors cursor-pointer">
+                        <span class="text-sm font-medium">Get Started</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="relative pt-32 pb-20">
+        <div class="glow absolute top-0 left-1/4 -translate-x-1/2"></div>
+        <div class="glow absolute bottom-0 right-1/4 translate-x-1/2"></div>
+
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Hero content with flex column for mobile -->
+                <div class="space-y-8 hero-content flex flex-col">
+                    <h1 class="text-6xl font-bold leading-tight">
+                        Transform your menu into
+                        <span class="text-gradient">digital magic</span>
+                    </h1>
+
+                    <!-- Image will appear here on mobile -->
+                    <div class="relative floating hero-image lg:hidden">
+                        <div class="gradient-border">
+                            <div class="p-1">
+                                <img loading="lazy" src="hero.jpg" alt="Restaurant menu preview" class="rounded-xl">
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-xl text-gray-400 leading-relaxed">
+                        Join over <span class="counter" data-target="5000" data-suffix="+">0</span> restaurants
+                        worldwide
+                        who trust QRMenuHub for their digital menu needs.
+                    </p>
+
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="counter" data-target="98" data-suffix="%">0</div>
+                            <p class="text-gray-400">Customer Satisfaction</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="counter" data-target="5000" data-suffix="+">0</div>
+                            <p class="text-gray-400">Active Users</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="counter" data-target="25" data-suffix="+">0</div>
+                            <p class="text-gray-400">Countries Served</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="gradient-border w-full sm:w-auto">
+                            <div class="px-8 py-4 hover:bg-white/5 transition-colors cursor-pointer text-center">
+                                <span class="font-medium">Start Free Trial</span>
+                            </div>
+                        </div>
+                        <button class="px-8 py-4 frame rounded-xl hover:bg-white/5 transition-colors w-full sm:w-auto">
+                            View Demo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Desktop-only image -->
+                <div class="relative floating hero-image hidden lg:block">
+                    <div class="gradient-border">
+                        <div class="p-1">
+                            <img loading="lazy" src="hero.jpg" alt="Restaurant menu preview" class="rounded-xl">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Features Section -->
+    <section id="features" class="section relative py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-sm text-sky-400 font-semibold tracking-wider uppercase">Features</span>
+                <h2 class="mt-4 text-5xl font-bold text-gradient pb-2">Everything you need to go digital</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Feature Cards -->
+                <div class="gradient-border group">
+                    <div class="p-8 hover:bg-white/5 transition-all duration-300">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="p-3 rounded-xl bg-sky-500/10 border border-sky-500/20 group-hover:border-sky-500/40 transition-colors">
+                                <svg class="h-6 w-6 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold">Easy Menu Creation</h3>
+                        </div>
+                        <p class="mt-4 text-gray-400">Intuitive drag-and-drop interface for quick menu updates and
+                            customization.</p>
+                    </div>
+                </div>
+
+                <div class="gradient-border group">
+                    <div class="p-8 hover:bg-white/5 transition-all duration-300">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 group-hover:border-purple-500/40 transition-colors">
+                                <svg class="h-6 w-6 text-pink-400" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold">Real-time Updates</h3>
+                        </div>
+                        <p class="mt-4 text-gray-400">Instantly update prices and items across all your digital menus
+                            and databases.</p>
+                    </div>
+                </div>
+
+
+                <div class="gradient-border group">
+                    <div class="p-8 hover:bg-white/5 transition-all duration-300">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 group-hover:border-purple-500/40 transition-colors">
+                                <svg class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold">Mobile Optimized</h3>
+                        </div>
+                        <p class="mt-4 text-gray-400">Perfect viewing experience on all devices and screen sizes.</p>
+                    </div>
+                </div>
+
+                <div class="gradient-border group">
+                    <div class="p-8 hover:bg-white/5 transition-all duration-300">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="p-3 rounded-xl bg-sky-500/10 border border-sky-500/20 group-hover:border-sky-500/40 transition-colors">
+                                <svg class="h-6 w-6 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold">QR Code Integration</h3>
+                        </div>
+                        <p class="mt-4 text-gray-400">Generate and track custom QR codes for seamless menu access.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why QRMenuHub Section -->
+    <section id="why-qrmenu" class="section relative py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-sm text-sky-400 font-semibold tracking-wider uppercase">Why Choose Us</span>
+                <h2 class="mt-4 text-5xl font-bold text-gradient pb-2">Why QRMenuHub?</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="gradient-border">
+                    <div class="p-8 text-center">
+                        <img loading="lazy" src="why1.png" alt="Cost Effective" class="mx-auto mb-6">
+                        <h3 class="text-xl font-semibold mb-4">Reduce Costs</h3>
+                        <p class="text-gray-400">Eliminate printing costs and reduce waste with our digital solution.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="gradient-border">
+                    <div class="p-8 text-center">
+                        <img loading="lazy" src="why2.png" alt="Real-time Updates" class="mx-auto mb-6">
+                        <h3 class="text-xl font-semibold mb-4">Increase Efficiency</h3>
+                        <p class="text-gray-400">Serve customers faster and streamline your ordering process.</p>
+                    </div>
+                </div>
+
+                <div class="gradient-border">
+                    <div class="p-8 text-center">
+                        <img loading="lazy" src="why3.png" alt="Analytics" class="mx-auto mb-6">
+                        <h3 class="text-xl font-semibold mb-4">Improve Customer Experience</h3>
+                        <p class="text-gray-400">Offer a modern and seamless ordering experience that customers will
+                            love.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section relative py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-sm text-sky-400 font-semibold tracking-wider uppercase">About Us</span>
+                <h2 class="mt-4 text-5xl font-bold text-gradient pb-2">Our Story</h2>
+            </div>
+            <!-- Smoked Glass Effect Wrapper -->
+            <div class="max-w-4xl mx-auto text-gray-400 leading-relaxed p-10 rounded-xl smoked-glass">
+                <p class="mb-6">
+                    Welcome to QRMenuHub.com, where innovation meets convenience in the realm of digital menus! We are
+                    your
+                    dedicated gateway to a seamless dining and business experience, revolutionizing the way menus are
+                    presented.
+                </p>
+                <p class="mb-6">
+                    At QRMenuHub, we understand the evolving needs of modern businesses, from restaurants and bakeries
+                    to
+                    salons and beyond. Our mission is to empower establishments of all sizes with a digital edge,
+                    simplifying interactions between businesses and their patrons through the magic of QR codes.
+                </p>
+                <h3 class="text-2xl font-bold mt-8 mb-4 text-white">Connect with Us:</h3>
+                <p>
+                    At QRMenuHub.com, we pride ourselves on being more than just a platform; we are a partner in your
+                    journey towards a more modern and efficient business operation. For inquiries, partnerships, or to
+                    learn more about our services and pricing, feel free to <a href="#contact"
+                        class="text-sky-400 hover:text-sky-300">contact us</a> - we're here to transform your
+                    businessinto
+                    a digital sensation.
+                </p>
+                <p class="mt-6">
+                    Embark on the digital menu revolution with QRMenuHub.com – where innovation meets the future of
+                    business interaction!
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="partners" class="section relative py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-sm text-sky-400 font-semibold tracking-wider uppercase">Our Partners</span>
+                <h2 class="mt-4 text-5xl font-bold text-gradient pb-2">Trusted By Industry Leaders</h2>
+            </div>
+
+            <div class="partner-carousel">
+                <div class="partner-carousel-inner">
+                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client1.png" alt="Partner 1"
+                            class="partner-logo">
+                    </div>
+                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client2.png" alt="Partner 2"
+                            class="partner-logo">
+                    </div>
+                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client3.png" alt="Partner 3"
+                            class="partner-logo">
+                    </div>
+                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client4.png" alt="Partner 4"
+                            class="partner-logo">
+                    </div>
+                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client5.png" alt="Partner 5"
+                            class="partner-logo">
+                    </div>
+                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client6.png" alt="Partner 6"
+                            class="partner-logo">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section relative py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-sm text-sky-400 font-semibold tracking-wider uppercase">Contact Us</span>
+                <h2 class="mt-4 text-5xl font-bold text-gradient pb-2">Get in Touch</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="space-y-8">
+                    <div class="bg-gray-800/50 frame rounded-xl p-6">
+                        <h4 class="text-xl font-medium mb-4">Our Office</h4>
+                        <p class="text-gray-400">123 Business Avenue<br>Tech District<br>New York, NY 10001</p>
+                    </div>
+
+                    <div class="bg-gray-800/50 frame rounded-xl p-6">
+                        <h4 class="text-xl font-medium mb-4">Contact Information</h4>
+                        <p class="text-gray-400">Email: info@qrmenuhub.com<br>Phone: (555) 123-4567</p>
+                    </div>
+                </div>
+
+                <div class="gradient-border">
+                    <div class="p-8">
+                        <form id="contactForm" class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Name</label>
+                                <input type="text"
+                                    class="w-full px-4 py-2 rounded-lg bg-gray-800/50 border border-gray-700 focus:border-sky-400 focus:ring-2 focus:ring-sky-400 focus:outline-none text-black"
+                                    required>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Email</label>
+                                <input type="email"
+                                    class="w-full px-4 py-2 rounded-lg bg-gray-800/50 border border-gray-700 focus:border-sky-400 focus:ring-2 focus:ring-sky-400 focus:outline-none text-black"
+                                    required>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Message</label>
+                                <textarea rows="4"
+                                    class="w-full px-4 py-2 rounded-lg bg-gray-800/50 border border-gray-700 focus:border-sky-400 focus:ring-2 focus:ring-sky-400 focus:outline-none text-black"
+                                    required></textarea>
+                            </div>
+
+                            <button type="submit" class="custom-button">
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="relative py-24 section">
+        <div class="glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="max-w-4xl mx-auto text-center px-6">
+            <h2 class="text-5xl font-bold mb-8 text-gradient pb-2">
+                Ready to transform your menu?
+            </h2>
+            <p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
+                Join thousands of restaurants already using QRMenuHub to create exceptional dining experiences.
+            </p>
+            <div class="gradient-border inline-block">
+                <div class="px-8 py-4 hover:bg-white/5 transition-colors cursor-pointer">
+                    <span class="font-medium">Start your free trial</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-gray-400">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+
+                <div class="text-center md:text-left">
+                    <img loading="lazy" src="logo.png" alt="QRMenuHub Logo" class="h-10 w-auto mr-3 mb-4" />
+                    <p class="text-sm">Simplifying Menus, Enhancing Experiences.</p>
+                </div>
+
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold mb-4 text-white">Products</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-sm hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#features" class="text-sm hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#solutions" class="text-sm hover:text-white transition-colors">Solutions</a></li>
+                        <li><a href="pricing.html" class="text-sm hover:text-white transition-colors">Pricing</a></li>
+                    </ul>
+                </div>
+
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold mb-4 text-white">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#about" class="text-sm hover:text-white transition-colors">About</a></li>
+                        <li><a href="#blog" class="text-sm hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#contact" class="text-sm hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold mb-4 text-white">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-sm hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="text-sm hover:text-white transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="text-xs text-center">© 2025 QRMenuHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+
+        // Utility function to create stagger animations for children
+        function createStaggerAnimation(parent, options = {}) {
+            const children = parent.children;
+            gsap.fromTo(children, {
+                opacity: 0,
+                y: 30,
+                scale: 0.95,
+                willChange: 'transform, opacity',
+                ...options.fromVars
+            }, {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.8,
+                stagger: 0.1,
+                willChange: 'transform, opacity',
+                ease: "power2.out",
+                ...options.toVars,
+                scrollTrigger: {
+                    trigger: parent,
+                    start: "top 90%",
+                    end: "bottom 20%",
+                    toggleActions: 'play none none reverse',
+                    ...options.scrollTrigger
+                }
+            });
+        }
+
+        // Enhanced section animations with internal elements
+        function setupEnhancedAnimations() {
+
+            // Hero Section Animations
+            gsap.fromTo(".hero-content", {
+                opacity: 0,
+                y: 50,
+                willChange: 'transform, opacity'
+            }, {
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                delay: 0.2,
+                ease: "power2.out"
+            });
+
+            if (window.innerWidth > 768) {
+
+                gsap.fromTo(".hero-content h1, .hero-content p, .hero-content div", {
+                    opacity: 0,
+                    y: 20,
+                    willChange: 'transform, opacity',
+                }, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    stagger: 0.1,
+                    delay: 0.4,
+                    ease: "power2.out"
+                });
+
+            }
+
+
+            // Hero Image Animation
+            gsap.fromTo(".hero-image", {
+                opacity: 0,
+                x: 100,
+                willChange: 'transform, opacity'
+            }, {
+                opacity: 1,
+                x: 0,
+                duration: 1,
+                delay: 0.2,
+                willChange: 'transform, opacity',
+                ease: "power2.out"
+            });
+
+            gsap.fromTo(".hero-image .gradient-border", {
+                scale: 0.9,
+                opacity: 0,
+                willChange: 'transform, opacity',
+            }, {
+                scale: 1,
+                opacity: 1,
+                duration: 0.8,
+                delay: 0.3,
+                willChange: 'transform, opacity',
+                ease: "power2.out"
+            })
+        }
+        // Features Section
+        const featureCards = document.querySelectorAll('#features .gradient-border');
+        featureCards.forEach((card, index) => {
+            gsap.fromTo(card, {
+                opacity: 0,
+                y: 30,
+                scale: 0.95,
+                willChange: 'transform, opacity',
+            }, {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.8,
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 85%",
+                    end: "bottom 15%",
+                    willChange: 'transform, opacity',
+                    toggleActions: 'play none none reverse'
+                },
+                delay: index * 0.1
+            });
+        });
+
+        // Why QRMenuHub Section
+        const whyCards = document.querySelectorAll('#why-qrmenu .gradient-border');
+        whyCards.forEach((card, index) => {
+            gsap.fromTo(card, {
+                opacity: 0,
+                y: 40,
+                rotateY: 15,
+                willChange: 'transform, opacity',
+            }, {
+                opacity: 1,
+                y: 0,
+                rotateY: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 80%",
+                    willChange: 'transform, opacity',
+                    end: "bottom 20%",
+                    toggleActions: 'play none none reverse'
+                },
+                delay: index * 0.2
+            });
+        });
+
+        // About Section
+        gsap.fromTo("#about .smoked-glass", {
+            opacity: 0,
+            scale: 0.9,
+            backdropFilter: "blur(0px)",
+            willChange: 'transform, opacity',
+        }, {
+            opacity: 1,
+            scale: 1,
+            backdropFilter: "blur(10px)",
+            duration: 1,
+            scrollTrigger: {
+                trigger: "#about",
+                start: "top 70%",
+                willChange: 'transform, opacity',
+                end: "bottom 20%",
+                toggleActions: 'play none none reverse'
+            }
+        });
+
+        // Partners Section
+        const partnerLogos = document.querySelectorAll('.partner-logo');
+        partnerLogos.forEach((logo, index) => {
+            gsap.fromTo(logo, {
+                opacity: 0,
+                scale: 0.8,
+                willChange: 'transform, opacity'
+            }, {
+                opacity: 1,
+                scale: 1,
+                duration: 0.6,
+                scrollTrigger: {
+                    trigger: logo,
+                    start: "top 85%",
+                    willChange: 'transform, opacity',
+                    end: "bottom 15%",
+                    toggleActions: 'play none none reverse'
+                },
+                delay: index * 0.1
+            });
+        });
+
+        // Contact Section
+        gsap.fromTo("#contact .frame", {
+            opacity: 0,
+            x: -50,
+            willChange: 'transform, opacity'
+        }, {
+            opacity: 1,
+            x: 0,
+            duration: 0.8,
+            stagger: 0.2,
+            scrollTrigger: {
+                trigger: "#contact",
+                start: "top 75%",
+                end: "bottom 25%",
+                toggleActions: 'play none none reverse'
+            }
+        });
+
+        gsap.fromTo("#contact .gradient-border", {
+            opacity: 0,
+            x: 50,
+            willChange: 'transform, opacity'
+        }, {
+            opacity: 1,
+            x: 0,
+            duration: 0.8,
+            scrollTrigger: {
+                trigger: "#contact",
+                start: "top 75%",
+                end: "bottom 25%",
+                toggleActions: 'play none none reverse'
+            }
+        });
+
+        // Form elements animation
+        const formElements = document.querySelectorAll('#contactForm > div');
+        formElements.forEach((element, index) => {
+            gsap.fromTo(element, {
+                opacity: 0,
+                y: 20,
+                willChange: 'transform, opacity'
+            }, {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                delay: 0.2 + (index * 0.1),
+                scrollTrigger: {
+                    trigger: "#contact",
+                    start: "top 75%",
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        });
+
+        // CTA Section
+        gsap.fromTo(".cta h2", {
+            opacity: 0,
+            y: 30,
+            willChange: 'transform, opacity'
+        }, {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            scrollTrigger: {
+                trigger: ".cta",
+                start: "top 80%",
+                toggleActions: 'play none none reverse'
+            }
+        });
+
+        gsap.fromTo(".cta .gradient-border", {
+            opacity: 0,
+            scale: 0.9,
+            willChange: 'transform, opacity'
+        }, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            delay: 0.3,
+            scrollTrigger: {
+                trigger: ".cta",
+                start: "top 80%",
+                toggleActions: 'play none none reverse'
+            }
+        });
+
+        // Initialize animations when the page loads
+        window.addEventListener('load', () => {
+            setupEnhancedAnimations();
+        });
+
+        // Initialize hero animations
+        function setupHeroAnimations() {
+        }
+
+
+        // Refresh ScrollTrigger on window resize
+        window.addEventListener('resize', () => {
+            ScrollTrigger.refresh();
+        });
+
+        window.onload = function () {
+            setupScrollAnimations();
+            setupHeroAnimations();
+
+
+            const navLinks = document.querySelectorAll('nav a[href^="#"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                });
+            })
+        };
+
+
+        const counters = document.querySelectorAll('.counter');
+
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            const duration = 2000; // 2 seconds
+            const steps = 50;
+            const stepDuration = duration / steps;
+            const increment = target / steps;
+            let current = 0;
+
+            const suffix = counter.getAttribute('data-suffix') || ''; // Get suffix if exists
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    counter.textContent = Math.round(current) + suffix;
+                    setTimeout(updateCounter, stepDuration);
+                } else {
+                    counter.textContent = target + suffix; // Final value with suffix
+                }
+            };
+
+            // Start counter when element comes into view
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        updateCounter();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(counter);
+        });
+
+        // Your existing scroll animations setup
+        function setupScrollAnimations() {
+            document.querySelectorAll('.section').forEach(section => {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                        }
+                    });
+                }, { threshold: 0.1 });
+                observer.observe(section);
+            });
+        }
+
+        function updateCounter(counter) {
+            const target = parseInt(counter.getAttribute('data-target'));
+            const duration = 2000;
+            const start = performance.now();
+
+            const update = (currentTime) => {
+                const elapsed = currentTime - start;
+                const progress = Math.min(elapsed / duration, 1);
+
+                counter.textContent = Math.round(target * progress);
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            };
+
+            requestAnimationFrame(update);
+        }
+
+
+        // Contact Form Handler
+        document.getElementById('contactForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            // Add your form submission logic here
+            alert('Thank you for your message. We will get back to you soon!');
+            this.reset();
+        });
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const carousel = document.querySelector('.partner-carousel-inner');
+            const slides = Array.from(document.querySelectorAll('.partner-slide'));
+            const slideWidth = slides[0].offsetWidth; // Width of a single slide
+            let currentIndex = 0;
+            let interval;
+
+            // Clone the first and last slides
+            const firstClones = slides.slice(0, 4).map(slide => slide.cloneNode(true));
+            const lastClones = slides.slice(-4).map(slide => slide.cloneNode(true));
+
+            // Apply clones to desktop only
+            if (window.innerWidth > 768) {
+                firstClones.forEach(clone => carousel.appendChild(clone));
+                lastClones.reverse().forEach(clone => carousel.insertBefore(clone, slides[0]));
+                carousel.style.transform = `translateX(-${4 * slideWidth}px)`;
+            }
+
+            function resetCarousel() {
+                if (window.innerWidth <= 768) {
+                    carousel.style.transition = 'none'; // Disable transitions for immediate positioning
+
+                    carousel.style.transform = `translateX(0px)`;
+                } else {
+                    // Restore the original behavior for desktop
+                    carousel.style.transform = `translateX(-${4 * slideWidth}px)`;
+                }
+            }
+
+            function moveSlides() {
+                if (window.innerWidth > 768) {
+                    currentIndex++;
+                    carousel.style.transition = 'transform 0.5s ease-in-out';
+                    carousel.style.transform = `translateX(-${(currentIndex + 4) * slideWidth}px)`;
+
+                    carousel.addEventListener('transitionend', function resetPosition() {
+                        if (currentIndex >= slides.length) {
+                            currentIndex = 0;
+                            carousel.style.transition = 'none';
+                            carousel.style.transform = `translateX(-${4 * slideWidth}px)`;
+                        } else if (currentIndex < 0) {
+                            currentIndex = slides.length - 1;
+                            carousel.style.transition = 'none';
+                            carousel.style.transform = `translateX(-${(currentIndex + 4) * slideWidth}px)`;
+                        }
+                        carousel.removeEventListener('transitionend', resetPosition);
+                    });
+
+                } else {
+                    // Mobile carousel
+                    currentIndex = (currentIndex + 1) % slides.length; // loop through the slides
+                    carousel.style.transition = 'transform 0.5s ease-in-out';
+                    carousel.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+                }
+            }
+
+
+            // Start the carousel
+            function startCarousel() {
+                interval = setInterval(moveSlides, 3000);
+            }
+
+            // Stop the carousel
+            function stopCarousel() {
+                clearInterval(interval);
+            }
+
+            resetCarousel()
+            // Start carousel on load
+            startCarousel();
+
+            window.addEventListener('resize', resetCarousel)
+        });
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+                const mobileMenuButton = document.querySelector('.mobile-menu-button');
+                const mobileMenu = document.querySelector('.mobile-menu');
+
+                if (!mobileMenuButton || !mobileMenu) {
+                    console.error('Mobile menu elements not found');
+                    return;
+                }
+
+                let isMenuOpen = false;
+
+                // Ensure entire button area is clickable
+                mobileMenuButton.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent event from bubbling
+                    isMenuOpen = !isMenuOpen;
+                    if (isMenuOpen) {
+                        mobileMenu.classList.add('active');
+                        mobileMenuButton.innerHTML = `
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            `;
+                    } else {
+                        mobileMenu.classList.remove('active');
+                        mobileMenuButton.innerHTML = `
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            `;
+                    }
+                });
+
+                // Modify click outside logic
+                document.addEventListener('click', (e) => {
+                    if (isMenuOpen && !mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                        mobileMenu.classList.remove('active');
+                        isMenuOpen = false;
+                        mobileMenuButton.innerHTML = `
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            `;
+                    }
+                });
+
+                const mobileMenuLinks = document.querySelectorAll('.mobile-menu a');
+                mobileMenuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.remove('active');
+                        isMenuOpen = false;
+                        mobileMenuButton.innerHTML = `
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            `;
+                    });
+                });
+            });
+    </script>
+
+</body>
+
+</html>

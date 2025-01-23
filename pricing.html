@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>QRMenuHub - Pricing</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+        }
+
+        .bg-mesh {
+            background-color: #0F172A;
+            background-image:
+                radial-gradient(at 40% 20%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(236, 72, 153, 0.12) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgba(139, 92, 246, 0.12) 0px, transparent 50%);
+            background-size: 120% 120%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle at center,
+                    rgba(56, 189, 248, 0.15),
+                    rgba(236, 72, 153, 0.15),
+                    transparent 70%);
+            filter: blur(100px);
+            animation: pulse 8s infinite;
+        }
+
+        .gradient-border {
+            position: relative;
+            border-radius: 0.75rem;
+            background: linear-gradient(45deg,
+                    rgba(56, 189, 248, 0.5),
+                    rgba(236, 72, 153, 0.5),
+                    rgba(139, 92, 246, 0.5));
+            padding: 1px;
+        }
+
+        .gradient-border>div {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 0.7rem;
+            height: 100%;
+        }
+
+        .popular-tag {
+            background: linear-gradient(45deg, #38BDF8, #EC4899);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #38BDF8, #EC4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-blur {
+            backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .price-card {
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-mesh min-h-screen text-white">
+    <nav class="fixed w-full z-50 nav-blur border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo Container -->
+                <div class="flex items-center">
+                    <img src="logo.png" alt="QRMenuHub Logo" class="h-10 w-auto mr-3" />
+                </div>
+    
+                <!-- Navigation Links - Centered -->
+                <div class="hidden md:flex items-center justify-center flex-1">
+                    <div class="flex items-center space-x-8">
+                        <a href="index.html" class="text-sm text-gray-300 hover:text-white transition-colors">HomePage</a>
+                        <a href="pricing.html" class="text-sm text-gray-300 hover:text-white transition-colors">Pricing</a>
+                        <a href="restaurant.html" class="text-sm text-gray-300 hover:text-white transition-colors">Restaurant</a>
+                        <a href="foodtruck.html" class="text-sm text-gray-300 hover:text-white transition-colors">Food Truck</a>
+                        <a href="cafe.html" class="text-sm text-gray-300 hover:text-white transition-colors">Cafe</a>
+                        <a href="bar.html" class="text-sm text-gray-300 hover:text-white transition-colors">Bar</a>
+                    </div>
+                </div>
+    
+                <!-- CTA Button -->
+                <div class="gradient-border">
+                    <div class="px-6 py-2 hover:bg-white/5 transition-colors cursor-pointer">
+                        <span class="text-sm font-medium">Get Started</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="relative pt-32 pb-20">
+        <div class="glow absolute top-0 left-1/4 -translate-x-1/2"></div>
+        <div class="glow absolute bottom-0 right-1/4 translate-x-1/2"></div>
+
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 price-heading">
+                <h1 class="text-6xl font-bold text-gradient mb-6 pb-2 pt-1">Simple, transparent pricing</h1>
+                <p class="text-xl text-gray-400">
+                    Start with a 14-day free trial. No credit card required.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto price-cards">
+                <!-- Starter Plan -->
+                <div class="gradient-border group">
+                    <div class="p-8 price-card">
+                        <h2 class="text-2xl font-bold mb-2">Starter</h2>
+                        <p class="text-gray-400 mb-6">Perfect for small cafes and food trucks</p>
+                        <div class="flex items-baseline mb-8">
+                            <span class="text-5xl font-bold">$29</span>
+                            <span class="text-gray-400 ml-2">/month</span>
+                        </div>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-center space-x-3">
+                                <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Up to 50 menu items</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Basic QR code generation</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Basic analytics</span>
+                            </li>
+                        </ul>
+                        <div class="gradient-border">
+                            <div class="text-center py-3 hover:bg-white/5 transition-colors cursor-pointer">
+                                Start free trial
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Plan -->
+                <div class="gradient-border group relative">
+                    <div class="popular-tag absolute top-0 right-6 -mt-8 px-4 py-1 rounded-full text-sm font-medium">
+                        Popular
+                    </div>
+                    <div class="p-8 price-card">
+                        <h2 class="text-2xl font-bold mb-2">Professional</h2>
+                        <p class="text-gray-400 mb-6">For established restaurants and bars</p>
+                        <div class="flex items-baseline mb-8">
+                            <span class="text-5xl font-bold">$79</span>
+                            <span class="text-gray-400 ml-2">/month</span>
+                        </div>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-center space-x-3">
+                                <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Unlimited menu items</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Custom QR codes with branding</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Advanced analytics & reporting</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Multiple menu categories</span>
+                            </li>
+                        </ul>
+                        <div class="gradient-border">
+                            <div class="text-center py-3 hover:bg-white/5 transition-colors cursor-pointer">
+                                Start free trial
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="gradient-border group">
+                    <div class="p-8 price-card">
+                        <h2 class="text-2xl font-bold mb-2">Enterprise</h2>
+                        <p class="text-gray-400 mb-6">For restaurant chains and franchises</p>
+                        <div class="flex items-baseline mb-8">
+                            <span class="text-5xl font-bold">$199</span>
+                            <span class="text-gray-400 ml-2">/month</span>
+                        </div>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-center space-x-3">
+                                <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Everything in Professional</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Multiple location management</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">API access</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Priority support</span>
+                            </li>
+                        </ul>
+                        <div class="gradient-border">
+                            <div class="text-center py-3 hover:bg-white/5 transition-colors cursor-pointer">
+                                Contact sales
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-gray-400">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+    
+                <div class="text-center md:text-left">
+                    <img src="logo.png" alt="QRMenuHub Logo" class="h-10 w-auto mr-3 mb-4" />
+                    <p class="text-sm">Simplifying Menus, Enhancing Experiences.</p>
+                </div>
+    
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold mb-4 text-white">Products</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-sm hover:text-white transition-colors">Home</a></li>
+                        <li><a href="index.html#features" class="text-sm hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#solutions" class="text-sm hover:text-white transition-colors">Solutions</a></li>
+                        <li><a href="pricing.html" class="text-sm hover:text-white transition-colors">Pricing</a></li>
+                    </ul>
+                </div>
+    
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold mb-4 text-white">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#about" class="text-sm hover:text-white transition-colors">About</a></li>
+                        <li><a href="#blog" class="text-sm hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#contact" class="text-sm hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold mb-4 text-white">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-sm hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="text-sm hover:text-white transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="text-xs text-center">© 2025 QRMenuHub. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script>
+        gsap.from(".price-heading", {
+            opacity: 0,
+            y: 50,
+            duration: 1,
+            delay: 0.2,
+            ease: "power3.out"
+        });
+
+        gsap.from(".price-heading h1, .price-heading p", {
+            opacity: 0,
+            y: 20,
+            duration: 0.8,
+            stagger: 0.2,
+            delay: 0.3,
+            ease: "power3.out"
+        });
+
+        gsap.from(".price-cards .gradient-border", {
+            opacity: 0,
+            y: 30,
+            duration: 1,
+            stagger: 0.2,
+            delay: 0.4,
+            ease: "power3.out"
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>Digital Menu - The Night Owl Bar</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInBottom {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+        }
+
+        .modal-content {
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .bg-mesh {
+            background-color: #0F172A;
+            background-image:
+                radial-gradient(at 40% 20%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle at center,
+                    rgba(56, 189, 248, 0.2),
+                    rgba(236, 72, 153, 0.2),
+                    transparent 70%);
+            filter: blur(120px);
+            animation: pulse 8s infinite;
+        }
+
+        .gradient-border {
+            position: relative;
+            border-radius: 0.75rem;
+            background: linear-gradient(45deg,
+                    rgba(56, 189, 248, 0.5),
+                    rgba(236, 72, 153, 0.5),
+                    rgba(139, 92, 246, 0.5));
+            padding: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .gradient-border:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .gradient-border>div {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 0.7rem;
+            height: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .gradient-border:hover>div {
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #38BDF8, #EC4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-blur {
+            backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .menu-card {
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .menu-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-4px);
+        }
+
+        .menu-card img {
+            transition: transform 0.5s ease;
+        }
+
+        .menu-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .category-button {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .category-button::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 50%;
+            background: linear-gradient(to right, #38BDF8, #EC4899);
+            transition: all 0.3s ease;
+        }
+
+        .category-button:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        .category-button.active-tab {
+            color: white;
+        }
+
+        .category-button.active-tab::after {
+            width: 100%;
+            left: 0;
+        }
+
+        .special-banner {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .menu-tab {
+            transition: all 0.3s ease;
+            /* Add transition for smoother animation */
+        }
+
+        .slideInLeft {
+            animation: slideInLeft 0.5s ease-out;
+        }
+
+        .slideInBottom {
+            animation: slideInBottom 0.5s ease-out;
+        }
+    </style>
+</head>
+
+<body class="bg-mesh min-h-screen text-white">
+    <div id="specialModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="modal-content relative bg-[#0F172A] w-full max-w-lg mx-4 rounded-xl overflow-hidden">
+            <div class="absolute inset-0 p-[1px] rounded-xl backdrop-blur-lg" style="background-color: rgba(0, 0, 0, 0.5);
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Optional, subtle shadow for depth */
+                        border: 1px solid rgba(255, 255, 255, 0.1); /* Optional, faint white border */
+                         ">
+                <div class="absolute inset-0 bg-[#0F172A] rounded-xl"></div>
+            </div>
+            <div class="relative p-6">
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold text-gradient mb-4">Happy Hour Special</h3>
+                    <div class="relative">
+                        <img src="assets/bar/special.png" alt="Special Cocktail"
+                            class="w-full h-48 object-cover rounded-lg mb-4">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0F172A] to-transparent"></div>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2">Midnight Mojito</h4>
+                    <p class="text-gray-400 mb-4">Classic mojito with a twist of dark rum and blackberry.</p>
+                    <div class="text-3xl font-bold text-gradient mb-6">$9.99</div>
+                    <button onclick="closeModal()" class="gradient-border inline-block">
+                        <div class="px-6 py-2">View Menu</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="fixed w-full z-50 nav-blur border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo Container -->
+                <div class="flex items-center">
+                    <img src="logo.png" alt="QRMenuHub Logo" class="h-10 w-auto mr-3" />
+                </div>
+    
+                <!-- Navigation Links - Centered -->
+                <div class="hidden md:flex items-center justify-center flex-1">
+                    <div class="flex items-center space-x-8">
+                        <a href="index.html" class="text-sm text-gray-300 hover:text-white transition-colors">HomePage</a>
+                        <a href="pricing.html" class="text-sm text-gray-300 hover:text-white transition-colors">Pricing</a>
+                        <a href="restaurant.html" class="text-sm text-gray-300 hover:text-white transition-colors">Restaurant</a>
+                        <a href="foodtruck.html" class="text-sm text-gray-300 hover:text-white transition-colors">Food Truck</a>
+                        <a href="cafe.html" class="text-sm text-gray-300 hover:text-white transition-colors">Cafe</a>
+                        <a href="bar.html" class="text-sm text-gray-300 hover:text-white transition-colors">Bar</a>
+                    </div>
+                </div>
+    
+                <!-- CTA Button -->
+                <div class="gradient-border">
+                    <div class="px-6 py-2 hover:bg-white/5 transition-colors cursor-pointer">
+                        <span class="text-sm font-medium">Get Started</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="pt-24 top-0 z-10">
+        <div class="max-w-7xl mx-auto px-6 py-6 sm:px-8 lg:px-12">
+            <div class="text-center">
+                <h1 class="text-5xl font-bold text-gradient pb-2">The Night Owl Bar</h1>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+            <nav class="flex justify-center">
+                <div class="flex space-x-8 overflow-x-auto py-4">
+                    <button onclick="showTab('cocktails')"
+                        class="category-button px-6 py-3 text-gray-400 hover:text-white active-tab">Cocktails</button>
+                    <button onclick="showTab('beers')"
+                        class="category-button px-6 py-3 text-gray-400 hover:text-white">Beers
+                    </button>
+                    <button onclick="showTab('wines')"
+                        class="category-button px-6 py-3 text-gray-400 hover:text-white">Wines</button>
+                    <button onclick="showTab('appetizers')"
+                        class="category-button px-6 py-3 text-gray-400 hover:text-white">Appetizers</button>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Menu Content Container -->
+    <div class="max-w-7xl mx-auto px-6 py-16 sm:px-8 lg:px-12">
+
+        <!-- Cocktails Tab Content -->
+        <div id="cocktails" class="menu-tab active slideInLeft">
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold text-gradient">Cocktails</h2>
+                <p class="mt-4 text-xl text-gray-400">Our signature and classic cocktails</p>
+            </div>
+            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div class="gradient-border">
+                    <div class="menu-card overflow-hidden">
+                        <img src="assets/bar/menu1.png" alt="Old Fashioned" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-medium">Old Fashioned</h3>
+                            </div>
+                            <p class="mt-3 text-gray-400">
+                                Bourbon, sugar, bitters, orange twist
+                            </p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">$12.99</span>
+                                <button class="gradient-border">
+                                    <div class="px-4 py-2 text-sm">Add to Order</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gradient-border">
+                    <div class="menu-card overflow-hidden">
+                        <img src="assets/bar/menu2.png" alt="Martini" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-medium">Martini</h3>
+                            </div>
+                            <p class="mt-3 text-gray-400">
+                                Gin or vodka, vermouth, olive or lemon twist
+                            </p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">$11.99</span>
+                                <button class="gradient-border">
+                                    <div class="px-4 py-2 text-sm">Add to Order</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gradient-border">
+                    <div class="menu-card overflow-hidden">
+                        <img src="assets/bar/menu3.png" alt="Margarita" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-medium">Margarita</h3>
+                            </div>
+                            <p class="mt-3 text-gray-400">
+                                Tequila, lime juice, orange liqueur
+                            </p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">$10.99</span>
+                                <button class="gradient-border">
+                                    <div class="px-4 py-2 text-sm">Add to Order</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Beers Tab Content -->
+        <div id="beers" class="menu-tab hidden">
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold text-gradient">Beers</h2>
+                <p class="mt-4 text-xl text-gray-400">Our wide selection of beers</p>
+            </div>
+            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div class="gradient-border">
+                    <div class="menu-card overflow-hidden">
+                        <img src="assets/bar/menu4.png" alt="IPA" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-medium">IPA</h3>
+                            </div>
+                            <p class="mt-3 text-gray-400">
+                                India Pale Ale
+                            </p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">$7.99</span>
+                                <button class="gradient-border">
+                                    <div class="px-4 py-2 text-sm">Add to Order</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gradient-border">
+                    <div class="menu-card overflow-hidden">
+                        <img src="assets/bar/menu5.png" alt="Lager" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-medium">Lager</h3>
+                            </div>
+                            <p class="mt-3 text-gray-400">
+                                Crisp light lager
+                            </p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">$6.99</span>
+                                <button class="gradient-border">
+                                    <div class="px-4 py-2 text-sm">Add to Order</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gradient-border">
+                    <div class="menu-card overflow-hidden">
+                        <img src="assets/bar/menu6.png" alt="Stout" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-medium">Stout</h3>
+                            </div>
+                            <p class="mt-3 text-gray-400">
+                                Rich dark stout
+                            </p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">$8.99</span>
+                                <button class="gradient-border">
+                                    <div class="px-4 py-2 text-sm">Add to Order</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Wines Tab Content -->
+        <div id="wines" class="menu-tab hidden">
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold text-gradient">Wines</h2>
+                <p class="mt-4 text-xl text-gray-400">Our exquisite range of wines</p>
+            </div>
+            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div class="gradient-border">
+                    <div class="menu-card overflow-hidden">
+                        <img src="assets/bar/menu7.png" alt="Red Wine" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-medium">Red Wine</h3>
+                            </div>
+                            <p class="mt-3 text-gray-400">
+                                Assorted Red wine
+                            </p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">$14.99</span>
+                                <button class="gradient-border">
+                                    <div class="px-4 py-2 text-sm">Add to Order</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gradient-border">
+                    <div class="menu-card overflow-hidden">
+                        <img src="assets/bar/menu8.png" alt="White Wine" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-medium">White Wine</h3>
+                            </div>
+                            <p class="mt-3 text-gray-400">
+                                Assorted White wine
+                            </p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">$13.99</span>
+                                <button class="gradient-border">
+                                    <div class="px-4 py-2 text-sm">Add to Order</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gradient-border">
+                    <div class="menu-card overflow-hidden">
+                        <img src="assets/bar/menu9.png" alt="Rose Wine" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-medium">Rose Wine</h3>
+                            </div>
+                            <p class="mt-3 text-gray-400">
+                                Assorted Rose wine
+                            </p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">$12.99</span>
+                                <button class="gradient-border">
+                                    <div class="px-4 py-2 text-sm">Add to Order</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appetizers Tab Content -->
+        <div id="appetizers" class="menu-tab hidden">
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold text-gradient">Appetizers</h2>
+                <p class="mt-4 text-xl text-gray-400">Snacks to share with your drinks</p>
+            </div>
+            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div class="gradient-border">
+                    <div class="menu-card overflow-hidden">
+                        <img src="assets/bar/menu10.png" alt="Nachos" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-medium">Nachos</h3>
+                            </div>
+                            <p class="mt-3 text-gray-400">
+                                Loaded nachos with cheese, salsa and sour cream
+                            </p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">$9.99</span>
+                                <button class="gradient-border">
+                                    <div class="px-4 py-2 text-sm">Add to Order</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gradient-border">
+                    <div class="menu-card overflow-hidden">
+                        <img src="assets/bar/menu11.png" alt="Wings" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-medium">Wings</h3>
+                            </div>
+                            <p class="mt-3 text-gray-400">
+                                Spicy chicken wings
+                            </p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">$10.99</span>
+                                <button class="gradient-border">
+                                    <div class="px-4 py-2 text-sm">Add to Order</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gradient-border">
+                    <div class="menu-card overflow-hidden">
+                        <img src="assets/bar/menu12.png" alt="Cheese Board" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-medium">Cheese Board</h3>
+                            </div>
+                            <p class="mt-3 text-gray-400">
+                                Selection of cheeses with crackers
+                            </p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">$12.99</span>
+                                <button class="gradient-border">
+                                    <div class="px-4 py-2 text-sm">Add to Order</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-gray-400">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+    
+                <div class="text-center md:text-left">
+                    <img src="logo.png" alt="QRMenuHub Logo" class="h-10 w-auto mr-3 mb-2" />
+                    <p class="text-sm">Simplifying Menus, Enhancing Experiences.</p>
+                </div>
+    
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold mb-4 text-white">Products</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-sm hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#features" class="text-sm hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#solutions" class="text-sm hover:text-white transition-colors">Solutions</a></li>
+                        <li><a href="pricing.html" class="text-sm hover:text-white transition-colors">Pricing</a></li>
+                    </ul>
+                </div>
+    
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold mb-4 text-white">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#about" class="text-sm hover:text-white transition-colors">About</a></li>
+                        <li><a href="#blog" class="text-sm hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#contact" class="text-sm hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold mb-4 text-white">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-sm hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="text-sm hover:text-white transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="text-xs text-center">© 2025 QRMenuHub. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+        // Show modal when page loads
+        window.addEventListener('DOMContentLoaded', (event) => {
+            setTimeout(showModal, 500); // Small delay for better UX
+            showTab('cocktails')
+        });
+
+        function showModal() {
+            const modal = document.getElementById('specialModal');
+            modal.classList.remove('hidden');
+            // Force reflow
+            modal.offsetHeight;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('specialModal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300); // Match the transition duration
+        }
+        // Close modal when clicking outside
+        document.getElementById('specialModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.menu-tab');
+            const buttons = document.querySelectorAll('.category-button');
+
+            tabs.forEach(tab => {
+                tab.classList.add('hidden');
+                tab.classList.remove('active');
+                tab.classList.remove('slideInLeft', 'slideInBottom')
+
+            });
+
+            buttons.forEach(button => {
+                button.classList.remove('active-tab');
+                button.classList.remove('text-white');
+                button.classList.add('text-gray-400');
+            });
+
+
+            const selectedTab = document.getElementById(tabId);
+            selectedTab.classList.remove('hidden');
+            selectedTab.classList.add('active');
+            const animationClass = getAnimationClass(tabId);
+
+
+            selectedTab.classList.add(animationClass);
+
+
+            const selectedButton = document.querySelector(`.category-button[onclick="showTab('${tabId}')"]`);
+            selectedButton.classList.add('active-tab');
+            selectedButton.classList.remove('text-gray-400')
+            selectedButton.classList.add('text-white')
+        }
+
+        function getAnimationClass(tabId) {
+            switch (tabId) {
+                case 'cocktails':
+                    return 'slideInLeft';
+                case 'beers':
+                    return 'slideInBottom';
+                case 'wines':
+                    return 'slideInBottom';
+                case 'appetizers':
+                    return 'slideInLeft';
+                default:
+                    return '';
+            }
+        }
+    </script>
+</body>
+
+</html>
