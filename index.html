@@ -10,6 +10,7 @@
     <!-- Load CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Scripts -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
@@ -489,6 +490,107 @@
                 width: 160px !important;
             }
         }
+
+        /* Theme toggle styles */
+        .theme-toggle {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #6b7280;
+            /* Gray color for icon */
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: righ;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            color: #ffffff;
+        }
+
+        /* Light Mode Styles - More comprehensive */
+        body.light-mode {
+            background-color: #f0f6ff;
+            color: #1a202c;
+        }
+
+        body.light-mode .bg-mesh {
+            background-color: #f5f9ff;
+            background-image:
+                radial-gradient(at 40% 20%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+        }
+
+        body.light-mode nav {
+            background-color: #e6f2ff;
+            border-bottom-color: #b3d9ff;
+        }
+
+        body.light-mode .text-white {
+            color: #1a202c;
+        }
+
+        body.light-mode .text-gray-300,
+        body.light-mode .text-gray-400 {
+            color: #4a5568;
+        }
+
+        body.light-mode .gradient-border {
+            background: linear-gradient(45deg,
+                    rgba(56, 189, 248, 0.3),
+                    rgba(236, 72, 153, 0.3),
+                    rgba(139, 92, 246, 0.3));
+        }
+
+        body.light-mode .gradient-border>div {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1a202c;
+        }
+
+        body.light-mode .bg-gray-800\/50 {
+            background-color: #e2e8f0;
+            color: #1a202c;
+        }
+
+        body.light-mode .border-gray-700 {
+            border-color: #cbd5e0;
+        }
+
+        body.light-mode input,
+        body.light-mode textarea {
+            background-color: #ffffff !important;
+            color: #1a202c !important;
+            border-color: #a0aec0 !important;
+        }
+
+        body.light-mode .frame {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .smoked-glass {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #1a202c;
+        }
+
+        /* Responsive adjustments for theme toggle */
+        @media (min-width: 768px) {
+            .mobile-nav-group {
+                margin-right: 20px;
+            }
+        }
+
+
+        /* Responsive adjustments for theme toggle */
+        @media (max-width: 768px) {
+            .mobile-nav-group {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        }
     </style>
 </head>
 
@@ -503,7 +605,7 @@
                 </div>
 
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8 desktop-menu">
+                <div class="hidden md:flex items-center space-x-8 desktop-menu mx-auto">
                     <a href="index.html" class="text-sm text-gray-300 hover:text-white transition-colors">HomePage</a>
                     <a href="pricing.html" class="text-sm text-gray-300 hover:text-white transition-colors">Pricing</a>
                     <a href="restaurant.html"
@@ -523,13 +625,14 @@
                     </svg>
                 </button>
 
-                <!-- CTA Button -->
-                <div class="hidden md:block">
+                <!-- CTA Button and Theme Toggle Container -->
+                <div class="hidden md:flex items-center space-x-4">
                     <div class="gradient-border">
                         <div class="px-4 py-2 hover:bg-white/5 transition-colors cursor-pointer">
                             <span class="text-sm font-medium">Get Started</span>
                         </div>
                     </div>
+                    <div id="themeToggleContainer"></div>
                 </div>
             </div>
         </div>
@@ -720,7 +823,7 @@
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="gradient-border">
                     <div class="p-8 text-center">
-                        <img loading="lazy" src="why1.png" alt="Cost Effective" class="mx-auto mb-6">
+                        <img loading="                        <img loading="lazy" src="why1.png" alt="Cost Effective" class="mx-auto mb-6">
                         <h3 class="text-xl font-semibold mb-4">Reduce Costs</h3>
                         <p class="text-gray-400">Eliminate printing costs and reduce waste with our digital solution.
                         </p>
@@ -813,11 +916,14 @@
                     <div class="partner-slide"><img loading="lazy" src="assets/clients/client6.png" alt="Partner 6"
                             class="partner-logo">
                     </div>
-                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client7.png" alt="Partner 6" class="partner-logo">
+                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client7.png" alt="Partner 6"
+                            class="partner-logo">
                     </div>
-                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client8.png" alt="Partner 6" class="partner-logo">
+                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client8.png" alt="Partner 6"
+                            class="partner-logo">
                     </div>
-                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client9.png" alt="Partner 6" class="partner-logo">
+                    <div class="partner-slide"><img loading="lazy" src="assets/clients/client9.png" alt="Partner 6"
+                            class="partner-logo">
                     </div>
                 </div>
             </div>
@@ -1316,121 +1422,163 @@
             this.reset();
         });
     </script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-                const carousel = document.querySelector('.partner-carousel-inner');
-                const slides = Array.from(document.querySelectorAll('.partner-slide'));
-                let slideWidth = slides[0].offsetWidth; // Dynamically update for responsiveness
-                let currentIndex = 0;
-                let interval;
+            const carousel = document.querySelector('.partner-carousel-inner');
+            const slides = Array.from(document.querySelectorAll('.partner-slide'));
+            let slideWidth = slides[0].offsetWidth; // Dynamically update for responsiveness
+            let currentIndex = 0;
+            let interval;
 
-                function updateSlideWidth() {
-                    slideWidth = slides[0].offsetWidth;
-                }
+            function updateSlideWidth() {
+                slideWidth = slides[0].offsetWidth;
+            }
 
-                function moveSlides() {
-                    currentIndex++;
-                    carousel.style.transition = 'transform 0.5s ease-in-out';
-                    carousel.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+            function moveSlides() {
+                currentIndex++;
+                carousel.style.transition = 'transform 0.5s ease-in-out';
+                carousel.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
 
-                    // Reset to the first slide after reaching the end
-                    carousel.addEventListener('transitionend', function resetPosition() {
-                        if (currentIndex >= slides.length) {
-                            currentIndex = 0;
-                            carousel.style.transition = 'none'; // Disable animation for instant reset
-                            carousel.style.transform = `translateX(0px)`;
-                        }
-                        carousel.removeEventListener('transitionend', resetPosition);
-                    });
-                }
+                // Reset to the first slide after reaching the end
+                carousel.addEventListener('transitionend', function resetPosition() {
+                    if (currentIndex >= slides.length) {
+                        currentIndex = 0;
+                        carousel.style.transition = 'none'; // Disable animation for instant reset
+                        carousel.style.transform = `translateX(0px)`;
+                    }
+                    carousel.removeEventListener('transitionend', resetPosition);
+                });
+            }
 
-                // Start the carousel
-                function startCarousel() {
-                    interval = setInterval(moveSlides, 3000);
-                }
+            // Start the carousel
+            function startCarousel() {
+                interval = setInterval(moveSlides, 3000);
+            }
 
-                // Stop the carousel
-                function stopCarousel() {
-                    clearInterval(interval);
-                }
+            // Stop the carousel
+            function stopCarousel() {
+                clearInterval(interval);
+            }
 
-                // Reset the carousel on resize
-                function resetCarousel() {
-                    updateSlideWidth();
-                    carousel.style.transition = 'none'; // Disable transitions during resize
-                    carousel.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-                }
+            // Reset the carousel on resize
+            function resetCarousel() {
+                updateSlideWidth();
+                carousel.style.transition = 'none'; // Disable transitions during resize
+                carousel.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+            }
 
-                // Add event listeners
-                carousel.addEventListener('mouseover', stopCarousel);
-                carousel.addEventListener('mouseout', startCarousel);
-                window.addEventListener('resize', resetCarousel);
+            // Add event listeners
+            carousel.addEventListener('mouseover', stopCarousel);
+            carousel.addEventListener('mouseout', startCarousel);
+            window.addEventListener('resize', resetCarousel);
 
-                // Initialize
-                resetCarousel();
-                startCarousel();
-            });
+            // Initialize
+            resetCarousel();
+            startCarousel();
+        });
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-                const mobileMenuButton = document.querySelector('.mobile-menu-button');
-                const mobileMenu = document.querySelector('.mobile-menu');
+            const mobileMenuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenu = document.querySelector('.mobile-menu');
 
-                if (!mobileMenuButton || !mobileMenu) {
-                    console.error('Mobile menu elements not found');
-                    return;
-                }
+            if (!mobileMenuButton || !mobileMenu) {
+                console.error('Mobile menu elements not found');
+                return;
+            }
 
-                let isMenuOpen = false;
+            let isMenuOpen = false;
 
-                // Ensure entire button area is clickable
-                mobileMenuButton.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevent event from bubbling
-                    isMenuOpen = !isMenuOpen;
-                    if (isMenuOpen) {
-                        mobileMenu.classList.add('active');
-                        mobileMenuButton.innerHTML = `
+            // Ensure entire button area is clickable
+            mobileMenuButton.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event from bubbling
+                isMenuOpen = !isMenuOpen;
+                if (isMenuOpen) {
+                    mobileMenu.classList.add('active');
+                    mobileMenuButton.innerHTML = `
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             `;
-                    } else {
-                        mobileMenu.classList.remove('active');
-                        mobileMenuButton.innerHTML = `
+                } else {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuButton.innerHTML = `
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
             `;
-                    }
-                });
+                }
+            });
 
-                // Modify click outside logic
-                document.addEventListener('click', (e) => {
-                    if (isMenuOpen && !mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
-                        mobileMenu.classList.remove('active');
-                        isMenuOpen = false;
-                        mobileMenuButton.innerHTML = `
+            // Modify click outside logic
+            document.addEventListener('click', (e) => {
+                if (isMenuOpen && !mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                    mobileMenu.classList.remove('active');
+                    isMenuOpen = false;
+                    mobileMenuButton.innerHTML = `
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
             `;
-                    }
-                });
+                }
+            });
 
-                const mobileMenuLinks = document.querySelectorAll('.mobile-menu a');
-                mobileMenuLinks.forEach(link => {
-                    link.addEventListener('click', () => {
-                        mobileMenu.classList.remove('active');
-                        isMenuOpen = false;
-                        mobileMenuButton.innerHTML = `
+            const mobileMenuLinks = document.querySelectorAll('.mobile-menu a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                    isMenuOpen = false;
+                    mobileMenuButton.innerHTML = `
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
             `;
-                    });
                 });
             });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.createElement('button');
+            themeToggle.classList.add('theme-toggle', 'ml-2');
+            themeToggle.setAttribute('aria-label', 'Toggle Theme');
+            themeToggle.innerHTML = `<i class="fas fa-moon"></i>`;
+
+
+            const themeToggleContainer = document.getElementById('themeToggleContainer');
+
+            if (themeToggleContainer) {
+                // Append the theme toggle
+                themeToggleContainer.appendChild(themeToggle);
+            }
+
+
+            // Theme toggle functionality
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+
+                // Update icon based on current mode
+                if (document.body.classList.contains('light-mode')) {
+                    themeToggle.innerHTML = `<i class="fas fa-sun"></i>`;
+                } else {
+                    themeToggle.innerHTML = `<i class="fas fa-moon"></i>`;
+                }
+
+                // Save preference in localStorage
+                localStorage.setItem('theme',
+                    document.body.classList.contains('light-mode') ? 'light' : 'dark'
+                );
+            });
+
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeToggle.innerHTML = `<i class="fas fa-sun"></i>`;
+            }
+        });
     </script>
 
 </body>
